@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: towerdefense
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - game-data:/var/lib/postgresql/data
+    networks:
+      - game-network
+
+  game:
+    build: .
+    depends_on:
+      - database
+    ports:
+      - "8080:8080"
+    networks:
+      - game-network
+    volumes:
+      - game-data:/app/data
+
+networks:
+  game-network:
+    driver: bridge
+
+volumes:
+  game-data:
+    driver: local
